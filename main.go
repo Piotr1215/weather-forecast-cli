@@ -1,3 +1,7 @@
+// Package main provides a command-line application that retrieves and displays
+// weather information including current conditions, a three-day forecast, and
+// sunrise/sunset times for a specified location. The data is fetched from the
+// weatherapi.com service using an API key.
 package main
 
 import (
