@@ -12,7 +12,9 @@ prepare_release:
   goreleaser --snapshot --clean
   git tag
 
-release:
+push_tag:
   git push origin $(cat VERSION)
+
+release:
   goreleaser release --clean
 
