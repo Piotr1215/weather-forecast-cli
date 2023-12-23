@@ -22,7 +22,15 @@ type Weather struct {
 		} `json:"condition"`
 	}
 	Forecast struct {
-		Today []struct {
+		ForecastDay []struct {
+			Date string `json:"date"`
+			Hour []struct {
+				Time      string  `json:"time"`
+				TempC     float64 `json:"temp_c"`
+				Condition struct {
+					Conditions string `json:"text"`
+				} `json:"condition"`
+			} `json:"hour"`
 			Cycle struct {
 				Sunrise string `json:"sunrise"`
 				Sunset  string `json:"sunset"`
@@ -74,19 +82,35 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error unmarshalling JSON:\n%v", err)
 	}
-	fmt.Println("Weather in", weather.Location.Name, "is", weather.Current.TempC, "degrees Celsius and", weather.Current.Condition.Conditions)
+	fmt.Println("\nWeather in", weather.Location.Name, "now is:", weather.Current.TempC, "degrees Celsius and", weather.Current.Condition.Conditions)
 
-	fmt.Println("Today sun rose at", weather.Forecast.Today[0].Cycle.Sunrise, "and will set at", weather.Forecast.Today[0].Cycle.Sunset)
+	fmt.Println("\nForecast for next days at 11 AM:")
+	layout := "2006-01-02 15:04" // Go reference time format
+	for _, day := range weather.Forecast.ForecastDay {
+		for _, hour := range day.Hour {
+			parsedTime, errr := time.Parse(layout, hour.Time)
+			if errr != nil {
+				fmt.Println("Error parsing time:", err)
+				continue
+			}
+			if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+				fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+			}
+		}
+	}
 
-	sunrise := weather.Forecast.Today[0].Cycle.Sunrise
-	sunset := weather.Forecast.Today[0].Cycle.Sunset
+	fmt.Println("\nSunrise and sunset and day length:")
+	fmt.Println("- Today sun rose at", weather.Forecast.ForecastDay[0].Cycle.Sunrise, "and will set at", weather.Forecast.ForecastDay[0].Cycle.Sunset)
+
+	sunrise := weather.Forecast.ForecastDay[0].Cycle.Sunrise
+	sunset := weather.Forecast.ForecastDay[0].Cycle.Sunset
 
 	hours, minutes, err := calculateDaylightDuration(sunrise, sunset)
 	if err != nil {
 		fmt.Println("Error calculating daylight duration:", err)
 	} else {
 
-		fmt.Printf("Time between sunrise and sunset is: %d hours and %d minutes\n", hours, minutes)
+		fmt.Printf("- Time between sunrise and sunset is: %d hours and %d minutes\n", hours, minutes)
 	}
 
 }
