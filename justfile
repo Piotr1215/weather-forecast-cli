@@ -18,3 +18,9 @@ push_tag:
 release:
   goreleaser release --clean
 
+build_container:
+  docker build -t weather-check . --load
+
+run_container:
+  docker run -it --rm -e WEATHER_API_KEY -e WEATHER_LOCATION weather-check
+
