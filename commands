@@ -1,0 +1,439 @@
+(dlv) p weather
+main.Weather {
+	Location: struct { Name string "json:\"name\"" } {
+		Name: "Mittelbuchen",},
+	Current: struct { TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } {
+		TempC: 6,
+		Condition: (*struct { Conditions string "json:\"text\"" })(0xc00031e098),},
+	Forecast: struct { ForecastDay []struct { Date string "json:\"date\""; Hour []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } "json:\"hour\""; Cycle struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" } "json:\"astro\"" } "json:\"forecastday\"" } {
+		ForecastDay: []struct { Date string "json:\"date\""; Hour []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } "json:\"hour\""; Cycle struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" } "json:\"astro\"" } len: 3, cap: 4, [
+			(*struct { Date string "json:\"date\""; Hour []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } "json:\"hour\""; Cycle struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" } "json:\"astro\"" })(0xc0002b25a0),
+			(*struct { Date string "json:\"date\""; Hour []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } "json:\"hour\""; Cycle struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" } "json:\"astro\"" })(0xc0002b25e8),
+			(*struct { Date string "json:\"date\""; Hour []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } "json:\"hour\""; Cycle struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" } "json:\"astro\"" })(0xc0002b2630),
+		],},}
+(dlv) so
+> main.main() ./main.go:95 (hits goroutine(1):3 total:3) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) so
+> main.main() ./main.go:96 (hits goroutine(1):2 total:2) (PC: 0x7cbacf)
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+    95:				parsedTime, errr := time.Parse(layout, hour.Time)
+=>  96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+   101:					fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+(dlv) so
+> main.main() ./main.go:95 (hits goroutine(1):4 total:4) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) so
+> main.main() ./main.go:96 (hits goroutine(1):3 total:3) (PC: 0x7cbacf)
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+    95:				parsedTime, errr := time.Parse(layout, hour.Time)
+=>  96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+   101:					fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+(dlv) so
+> main.main() ./main.go:95 (hits goroutine(1):5 total:5) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) stack
+0  0x00000000007cb9c4 in main.main
+   at ./main.go:95
+1  0x0000000000441787 in runtime.main
+   at /usr/local/go/src/runtime/proc.go:267
+2  0x00000000004721c1 in runtime.goexit
+   at /usr/local/go/src/runtime/asm_amd64.s:1650
+(dlv) step
+> time.Parse() /usr/local/go/src/time/format.go:1007 (PC: 0x4d2233)
+  1002:	// in a fabricated location with the given zone abbreviation and a zero offset.
+  1003:	// This choice means that such a time can be parsed and reformatted with the
+  1004:	// same layout losslessly, but the exact instant used in the representation will
+  1005:	// differ by the actual zone offset. To avoid such problems, prefer time layouts
+  1006:	// that use a numeric zone offset, or use ParseInLocation.
+=>1007:	func Parse(layout, value string) (Time, error) {
+  1008:		// Optimize for RFC3339 as it accounts for over half of all representations.
+  1009:		if layout == RFC3339 || layout == RFC3339Nano {
+  1010:			if t, ok := parseRFC3339(value, Local); ok {
+  1011:				return t, nil
+  1012:			}
+(dlv) b format.go:1010
+(dlv) b /usr/local/go/src/time/format.go:1010
+Breakpoint 3 set at 0x4d22eb for time.Parse() /usr/local/go/src/time/format.go:1010
+(dlv) c
+> main.main() ./main.go:96 (hits goroutine(1):4 total:4) (PC: 0x7cbacf)
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+    95:				parsedTime, errr := time.Parse(layout, hour.Time)
+=>  96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+   101:					fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+(dlv) c
+> main.main() ./main.go:95 (hits goroutine(1):6 total:6) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) c
+> main.main() ./main.go:96 (hits goroutine(1):5 total:5) (PC: 0x7cbacf)
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+    95:				parsedTime, errr := time.Parse(layout, hour.Time)
+=>  96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+   101:					fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+(dlv) c
+> main.main() ./main.go:95 (hits goroutine(1):7 total:7) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) c
+> main.main() ./main.go:96 (hits goroutine(1):6 total:6) (PC: 0x7cbacf)
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+    95:				parsedTime, errr := time.Parse(layout, hour.Time)
+=>  96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+   101:					fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+(dlv) c
+> main.main() ./main.go:95 (hits goroutine(1):8 total:8) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) l
+> main.main() ./main.go:95 (hits goroutine(1):8 total:8) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) list 10000
+Showing /home/decoder/dev/weather-forecast-cli/main.go:10000 (PC: 0x0)
+(dlv) list 400
+Showing /home/decoder/dev/weather-forecast-cli/main.go:400 (PC: 0x0)
+(dlv) list^
+(dlv) list:end
+(dlv) l
+> main.main() ./main.go:95 (hits goroutine(1):8 total:8) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) l main.go
+(dlv) l main.go:455
+Showing /home/decoder/dev/weather-forecast-cli/main.go:455 (PC: 0x0)
+(dlv) ed
+(dlv) l main.go:140
+Showing /home/decoder/dev/weather-forecast-cli/main.go:140 (PC: 0x0)
+   135:	
+   136:		duration := sunsetTime.Sub(sunriseTime)
+   137:		hours := int(duration.Hours())
+   138:		minutes := int(duration.Minutes()) - (hours * 60)
+   139:		return hours, minutes, nil
+   140:	}
+(dlv) locals
+k = "600a570d61994467bd6210003232112"
+l = "Mittelbuchen"
+err = error nil
+res = ("*net/http.Response")(0xc00025a000)
+body = []uint8 len: 50371, cap: 57344, [...]
+weather = main.Weather {Location: (*struct { Name string "json:\"name\"" })(0xc00031e080), Current: (*struct { TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" })(0xc00031e090), Forecast: (*struct { ForecastDay []struct { Date string "json:\"date\""; Hour []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } "json:\"hour\""; Cycle struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" } "json:\"astro\"" } "json:\"forecastday\"" })(0xc00031e0a8)}
+layout = "2006-01-02 15:04"
+day = struct { Date string "json:\"date\""; Hour []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } "json:\"hour\""; Cycle struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" } "json:\"astro\"" } {Date: "2023-12-27", Hour: []struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } len: 24, cap: 32, [...], Cycle: (*struct { Sunrise string "json:\"sunrise\""; Sunset string "json:\"sunset\"" })(0xc0002cbe08)}
+hour = struct { Time string "json:\"time\""; TempC float64 "json:\"temp_c\""; Condition struct { Conditions string "json:\"text\"" } "json:\"condition\"" } {Time: "2023-12-27 06:00", TempC: 6, Condition: (*struct { Conditions string "json:\"text\"" })(0xc0002cbd90)}
+(dlv) cl
+(dlv) c
+> main.main() ./main.go:96 (hits goroutine(1):7 total:7) (PC: 0x7cbacf)
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+    95:				parsedTime, errr := time.Parse(layout, hour.Time)
+=>  96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+   101:					fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+(dlv) l main.go:140
+Showing /home/decoder/dev/weather-forecast-cli/main.go:140 (PC: 0x0)
+   135:	
+   136:		duration := sunsetTime.Sub(sunriseTime)
+   137:		hours := int(duration.Hours())
+   138:		minutes := int(duration.Minutes()) - (hours * 60)
+   139:		return hours, minutes, nil
+   140:	}
+(dlv) b 139
+Breakpoint 4 set at 0x7cc6a5 for main.calculateDaylightDuration() ./main.go:139
+(dlv) c
+> main.main() ./main.go:95 (hits goroutine(1):9 total:9) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) c
+> main.main() ./main.go:96 (hits goroutine(1):8 total:8) (PC: 0x7cbacf)
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+    95:				parsedTime, errr := time.Parse(layout, hour.Time)
+=>  96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+   101:					fmt.Println("- Temperature on", day.Date, "at 11 AM will be", hour.TempC, "°C", "with conditions", hour.Condition.Conditions)
+(dlv) c
+> main.main() ./main.go:95 (hits goroutine(1):10 total:10) (PC: 0x7cb9c4)
+    90:	
+    91:		fmt.Println("\nForecast for next days at 11 AM:")
+    92:		layout := "2006-01-02 15:04" // Go reference time format
+    93:		for _, day := range weather.Forecast.ForecastDay {
+    94:			for _, hour := range day.Hour {
+=>  95:				parsedTime, errr := time.Parse(layout, hour.Time)
+    96:				if errr != nil {
+    97:					fmt.Println("Error parsing time:", err)
+    98:					continue
+    99:				}
+   100:				if parsedTime.Hour() == 11 && parsedTime.Day() != time.Now().Day() {
+(dlv) bp
+Breakpoint runtime-fatal-throw (enabled) at 0x45560e,0x43ef84,0x43eea4 for (multiple functions)() <multiple locations>:0 (0)
+Breakpoint unrecovered-panic (enabled) at 0x43f304 for runtime.fatalpanic() /usr/local/go/src/runtime/panic.go:1188 (0)
+	print runtime.curg._panic.arg
+Breakpoint 1 (enabled) at 0x7cb9c4 for main.main() ./main.go:95 (10)
+Breakpoint 2 (enabled) at 0x7cbacf for main.main() ./main.go:96 (8)
+Breakpoint 3 (enabled) at 0x4d22eb for time.Parse() /usr/local/go/src/time/format.go:1010 (0)
+Breakpoint 4 (enabled) at 0x7cc6a5 for main.calculateDaylightDuration() ./main.go:139 (0)
+(dlv) help
+The following commands are available:
+
+Running the program:
+    call ------------------------ Resumes process, injecting a function call (EXPERIMENTAL!!!)
+    continue (alias: c) --------- Run until breakpoint or program termination.
+    next (alias: n) ------------- Step over to next source line.
+    rebuild --------------------- Rebuild the target executable and restarts it. It does not work if the executable was not built by delve.
+    restart (alias: r) ---------- Restart process.
+    step (alias: s) ------------- Single step through program.
+    step-instruction (alias: si)  Single step a single cpu instruction.
+    stepout (alias: so) --------- Step out of the current function.
+
+Manipulating breakpoints:
+    break (alias: b) ------- Sets a breakpoint.
+    breakpoints (alias: bp)  Print out info for active breakpoints.
+    clear ------------------ Deletes breakpoint.
+    clearall --------------- Deletes multiple breakpoints.
+    condition (alias: cond)  Set breakpoint condition.
+    on --------------------- Executes a command when a breakpoint is hit.
+    toggle ----------------- Toggles on or off a breakpoint.
+    trace (alias: t) ------- Set tracepoint.
+    watch ------------------ Set watchpoint.
+
+Viewing program variables and memory:
+    args ----------------- Print function arguments.
+    display -------------- Print value of an expression every time the program stops.
+    examinemem (alias: x)  Examine raw memory at the given address.
+    locals --------------- Print local variables.
+    print (alias: p) ----- Evaluate an expression.
+    regs ----------------- Print contents of CPU registers.
+    set ------------------ Changes the value of a variable.
+    vars ----------------- Print package variables.
+    whatis --------------- Prints type of an expression.
+
+Listing and switching between threads and goroutines:
+    goroutine (alias: gr) -- Shows or changes current goroutine
+    goroutines (alias: grs)  List program goroutines.
+    thread (alias: tr) ----- Switch to the specified thread.
+    threads ---------------- Print out info for every traced thread.
+
+Viewing the call stack and selecting frames:
+    deferred --------- Executes command in the context of a deferred call.
+    down ------------- Move the current frame down.
+    frame ------------ Set the current frame, or execute command on a different frame.
+    stack (alias: bt)  Print stack trace.
+    up --------------- Move the current frame up.
+
+Other commands:
+    config --------------------- Changes configuration parameters.
+    disassemble (alias: disass)  Disassembler.
+    dump ----------------------- Creates a core dump from the current process state
+    edit (alias: ed) ----------- Open where you are in $DELVE_EDITOR or $EDITOR
+    exit (alias: quit | q) ----- Exit the debugger.
+    funcs ---------------------- Print list of functions.
+    help (alias: h) ------------ Prints the help message.
+    libraries ------------------ List loaded dynamic libraries
+    list (alias: ls | l) ------- Show source code.
+    packages ------------------- Print list of packages.
+    source --------------------- Executes a file containing a list of delve commands
+    sources -------------------- Print list of source files.
+    target --------------------- Manages child process debugging.
+    transcript ----------------- Appends command output to a file.
+    types ---------------------- Print list of types
+
+Type help followed by a command for full documentation.
+(dlv) clear 2
+Breakpoint 2 cleared at 0x7cbacf for main.main() ./main.go:96
+(dlv) bp
+Breakpoint runtime-fatal-throw (enabled) at 0x43ef84,0x45560e,0x43eea4 for (multiple functions)() <multiple locations>:0 (0)
+Breakpoint unrecovered-panic (enabled) at 0x43f304 for runtime.fatalpanic() /usr/local/go/src/runtime/panic.go:1188 (0)
+	print runtime.curg._panic.arg
+Breakpoint 1 (enabled) at 0x7cb9c4 for main.main() ./main.go:95 (10)
+Breakpoint 3 (enabled) at 0x4d22eb for time.Parse() /usr/local/go/src/time/format.go:1010 (0)
+Breakpoint 4 (enabled) at 0x7cc6a5 for main.calculateDaylightDuration() ./main.go:139 (0)
+(dlv) clear 1
+Breakpoint 1 cleared at 0x7cb9c4 for main.main() ./main.go:95
+(dlv) c
+> main.calculateDaylightDuration() ./main.go:139 (hits goroutine(1):1 total:1) (PC: 0x7cc6a5)
+   134:		}
+   135:	
+   136:		duration := sunsetTime.Sub(sunriseTime)
+   137:		hours := int(duration.Hours())
+   138:		minutes := int(duration.Minutes()) - (hours * 60)
+=> 139:		return hours, minutes, nil
+   140:	}
+(dlv) locals
+sunriseTime = time.Time(0000-01-01T08:23:00Z){wall: 0, ext: -31592220, loc: *time.Location nil}
+err = error nil
+sunsetTime = time.Time(0000-01-01T16:27:00Z){wall: 0, ext: -31563180, loc: *time.Location nil}
+duration = 29040000000000
+hours = 8
+minutes = 4
+(dlv) set hours = 33
+(dlv) locals
+sunriseTime = time.Time(0000-01-01T08:23:00Z){wall: 0, ext: -31592220, loc: *time.Location nil}
+err = error nil
+sunsetTime = time.Time(0000-01-01T16:27:00Z){wall: 0, ext: -31563180, loc: *time.Location nil}
+duration = 29040000000000
+hours = 33
+minutes = 4
+(dlv) c
+(dlv) r
+Process restarted with PID 1322374
+(dlv) l
+Stopped at: 0x7a72edbc3290
+=>   1:	no source available
+(dlv) b
+Breakpoint 5 set at 0x7a72edbc3290 for :0
+(dlv) bp
+Breakpoint runtime-fatal-throw (enabled) at 0x43eea4,0x43ef84,0x45560e for (multiple functions)() <multiple locations>:0 (0)
+Breakpoint unrecovered-panic (enabled) at 0x43f304 for runtime.fatalpanic() /usr/local/go/src/runtime/panic.go:1188 (0)
+	print runtime.curg._panic.arg
+Breakpoint 3 (enabled) at 0x4d22eb for time.Parse() /usr/local/go/src/time/format.go:1010 (0)
+Breakpoint 4 (enabled) at 0x7cc6a5 for main.calculateDaylightDuration() ./main.go:139 (0)
+Breakpoint 5 (enabled) at 0x7a72edbc3290 for :0 (0)
+(dlv) c
+Stopped at: 0x7a72edbc3290
+=>   1:	no source available
+(dlv) s
+Stopped at: 0x7a72edbc3290
+=>   1:	no source available
+(dlv) si
+Stopped at: 0x7a72edbc3293
+=>   1:	no source available
+(dlv) so
+Stopped at: 0x7a72edbc3293
+=>   1:	no source available
+(dlv) s main.go
+Stopped at: 0x7a72edbc3293
+=>   1:	no source available
+(dlv) ls
+Stopped at: 0x7a72edbc3293
+=>   1:	no source available
+(dlv) exit
